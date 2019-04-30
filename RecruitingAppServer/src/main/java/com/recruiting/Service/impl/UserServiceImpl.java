@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAll() {
+    public List<User> getAll() {
         List<User> userList = userRepo.findAll();
         List<UserDto> result = new ArrayList<>();
         for (User user : userList) {
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
         }
 
         log.info("IN getAll - {} users found", result.size());
-        return result;
+        return userList;
     }
 
     @Override

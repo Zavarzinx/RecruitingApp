@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
-@RequestMapping(value = "/registration")
+@CrossOrigin(origins = "http://localhost:8080")
+@RequestMapping(value = "/api/registration")
 public class RegistrationController {
     private final UserService userService;
 
@@ -21,10 +22,7 @@ public class RegistrationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User addNewUser (@RequestBody User user) {
-        User registered = userService.register(user);
-
-
         log.info(user.toString() + " successfully saved into DB");
-        return user;
+        return userService.register(user);
     }
 }

@@ -12,16 +12,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @Slf4j
+@CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping(value = "/api/auth")
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
@@ -53,6 +51,7 @@ public class AuthenticationController {
             Map<Object, Object> response = new HashMap<>();
             response.put("username", username);
             response.put("token", token);
+            response.put("roles",user.getRoles());
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {

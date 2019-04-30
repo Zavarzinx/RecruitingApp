@@ -10,7 +10,7 @@ public interface UserService  {
 
     User register(User user);
 
-    List<UserDto> getAll();
+    List<User> getAll();
 
     User findByUsername(String username);
 

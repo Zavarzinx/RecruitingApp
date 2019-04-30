@@ -47,9 +47,10 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="author" type="VARCHAR(100)">
-                <constraints nullable="false"/>
+            <column name="title" type="VARCHAR">
+                <constraints nullable="false" />
             </column>
+
             <column name="user_id" type="BIGINT">
             </column>
         </createTable>

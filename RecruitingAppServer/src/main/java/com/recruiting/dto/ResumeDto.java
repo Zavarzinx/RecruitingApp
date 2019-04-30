@@ -2,13 +2,14 @@ package com.recruiting.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.recruiting.domain.Resume;
+import com.recruiting.domain.User;
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ResumeDto extends Resume {
     private Long id;
-    private String author;
+    private User author;
     private String text;
 
     public Resume toResume(){

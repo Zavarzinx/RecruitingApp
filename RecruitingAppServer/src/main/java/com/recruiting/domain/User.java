@@ -1,5 +1,6 @@
 package com.recruiting.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -15,8 +16,8 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @Data
+@ToString(exclude = "resumes")
 @EqualsAndHashCode(of = { "id" })
-
 public class User {
 
     @Id
@@ -39,6 +40,14 @@ public class User {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Resume> resumes;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Job> jobs;
 
 
     public User() {

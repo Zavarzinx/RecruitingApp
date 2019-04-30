@@ -1,17 +1,17 @@
 package com.recruiting.controller;
 
+import com.recruiting.Service.UserService;
 import com.recruiting.domain.Resume;
 import com.recruiting.domain.User;
-import com.recruiting.dto.ResumeDto;
 import com.recruiting.repo.ResumeRepo;
 import com.recruiting.repo.UserRepo;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,14 +26,20 @@ public class ResumeController {
 
     private final UserRepo userRepo;
 
+    private final UserService userService;
+
     @Autowired
-    public ResumeController(ResumeRepo resumeRepo,UserRepo userRepo) {
+    public ResumeController(ResumeRepo resumeRepo, UserRepo userRepo, UserService userService) {
         this.resumeRepo = resumeRepo;
         this.userRepo = userRepo;
+        this.userService = userService;
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<Resume>> resumesList(){
+        if (resumeRepo.findAll() == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(resumeRepo.findAll(), HttpStatus.OK);
     }
 
@@ -45,25 +51,36 @@ public class ResumeController {
         return new ResponseEntity<>(resume, HttpStatus.OK);
     }
 
-    @GetMapping("/author/{name}")
-    public ResponseEntity<List<Resume>> getAllResumeByAuthor(@PathVariable("name") String author){
-        log.info(resumeRepo.findAllByAuthor(author) + " successfully get from DB");
-        return new ResponseEntity<>(resumeRepo.findAllByAuthor(author), HttpStatus.OK);
+    @GetMapping("/all/user")
+    public ResponseEntity<List<Resume>> getAllResumeByUser(@AuthenticationPrincipal UserDetails userDetails){
+        User user = userService.findByUsername(userDetails.getUsername());
+        log.info(resumeRepo.findAllByAuthor(user) + " successfully get from DB");
+
+        if (resumeRepo.findAllByAuthor(user) == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(resumeRepo.findAllByAuthor(user), HttpStatus.OK);
     }
 
-    @PostMapping("/post")
+
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Resume> createResume(@RequestBody Resume resume){
+    public ResponseEntity<Resume> createResume(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Resume resume){
+        log.info(userDetails + "current user while creating author");
+        log.info("resume without author" + resume);
+        log.info("username " + userRepo.findByUsername(userDetails.getUsername()));
+        log.info("username " + userDetails.getUsername());
+        resume.setAuthor(userRepo.findByUsername(userDetails.getUsername()));
         log.info("POST");
         log.info(resume.toString() + " successfully saved into DB");
         return new ResponseEntity<>(resumeRepo.save(resume), HttpStatus.OK);
     }
 
-    @PutMapping
-    public Resume updateResume(@PathVariable ("id") Resume resumeFromDB, @RequestBody Resume resume){
+    @PutMapping("{id}")
+    public ResponseEntity<Resume> updateResume(@PathVariable ("id") Resume resumeFromDB, @RequestBody Resume resume){
         log.info("PUT");
-        BeanUtils.copyProperties(resume,resumeFromDB,"id");
-        return resumeRepo.save(resumeFromDB);
+        BeanUtils.copyProperties(resume,resumeFromDB,"id","author");
+        return new ResponseEntity<>(resumeRepo.save(resumeFromDB), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
@@ -71,17 +88,6 @@ public class ResumeController {
     {   log.info("DELETE");
         resumeRepo.delete(resume);
     }
-    /*
-
-    https://github.com/paweljw/bookstore-frontend/tree/master/src/components
-
-    https://github.com/drucoder/sarafan/blob/EmbeddedId/src/main/java/letscode/sarafan/service/MessageService.java
-
-    https://github.com/shimh-develop/blog-vue-springboot/blob/2a40db7a09175ddeab3f5c352e0268185387569b/blog-api/src/main/java/com/shimh/controller/ArticleController.java
-
-        axios???
-    }
-     */
 
 
 }

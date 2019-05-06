@@ -51,8 +51,14 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="user_id" type="BIGINT">
+            <column name="creation_date" type="VARCHAR">
+                <constraints nullable="false" />
             </column>
+
+            <column name="last_update" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+
         </createTable>
     </changeSet>
 
@@ -98,6 +104,14 @@
             </column>
 
             <column name="user_id" type="BIGINT">
+            </column>
+
+            <column name="creation_date" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="last_update" type="VARCHAR">
+                <constraints nullable="false" />
             </column>
         </createTable>
     </changeSet>

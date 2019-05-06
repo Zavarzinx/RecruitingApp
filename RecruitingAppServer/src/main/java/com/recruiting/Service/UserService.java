@@ -17,4 +17,8 @@ public interface UserService  {
     User findById(Long id);
 
     void delete(Long id);
+
+    boolean confirmAccount(String confirmationToken);
+
+    User updateUser(User user, User userFromDB);
 }

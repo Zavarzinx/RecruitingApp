@@ -10,11 +10,6 @@ module.exports = {
                 secure: false,
                 changeOrigin: true
             },
-            '/login': {
-                target: 'http://localhost:8088',
-                secure: false,
-                changeOrigin: true
-            },
 
         }
     }

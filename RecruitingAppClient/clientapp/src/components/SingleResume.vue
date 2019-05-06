@@ -3,7 +3,7 @@
         <div class="container">
             <div class="row">
                 <form role="form" class="col-md-9 go-right">
-                    <h2>Submit new resume</h2>
+                    <h2>Resume info</h2>
                     <div class="form-group">
                         <input id="title" name="title" type="text" class="form-control" required v-model="resume.title">
                         <label for="title">Resume Name</label>
@@ -15,7 +15,8 @@
                 </form>
             </div>
             <b-button @click="getResume()"  variant="primary">Get resume</b-button>
-            <b-button @click="updateResume()"  variant="primary">Update resume</b-button>
+            <b-button @click="updateResume()" v-if="isLoggedIn" variant="primary">Update resume</b-button>
+            <b-button @click="deleteResume()" v-if="isLoggedIn"  variant="primary">Delete resume</b-button>
             </div>
         </div>
 
@@ -37,6 +38,17 @@ data() {
         },
     }
 },
+    computed: {
+        isAdmin() {
+            return this.$store.getters.isAdmin
+        },
+        isRecruiter() {
+            return this.$store.getters.isRecruiter
+        },
+        isLoggedIn() {
+            return this.$store.getters.isUser
+        },
+    },
 methods: {
     getResume() {
         console.log("route id " + this.$route.id)
@@ -69,8 +81,25 @@ methods: {
                     this.errors.push(e)
                 })
         })
+    },
+    deleteResume(){
+        AXIOS.delete('/resume/' + this.$route.params.id,
+            {headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization':localStorage.token,
+                    'Access-Control-Allow-Origin': "*"
+                }}).then(response => {
+            console.log(response.data)
+            this.$router.push('/resume')
+                .catch(e => {
+                    this.errors.push(e)
+                })
+        })
     }
-}
+},
+    beforeMount(){
+        this.getResume()
+    }
 }
 </script>
 

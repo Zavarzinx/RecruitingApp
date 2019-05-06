@@ -1,13 +1,16 @@
 package com.recruiting.controller;
 
-import com.recruiting.domain.Job;
-import com.recruiting.repo.JobRepo;
+import com.recruiting.Service.UserService;
+import com.recruiting.domain.User;
+import com.recruiting.domain.Vacancy;
+import com.recruiting.repo.VacancyRepo;
 import com.recruiting.repo.UserRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -17,46 +20,69 @@ import java.util.List;
 @RestController
 @Slf4j
 @CrossOrigin(origins = "http://localhost:8080")
-@RequestMapping(value = "/api/recruiter/")
+@RequestMapping(value = "/api/recruiter")
 public class RecruiterController {
 
-    private final JobRepo jobRepo;
+    private final VacancyRepo vacancyRepo;
 
     private final UserRepo userRepo;
 
+    private final UserService userService;
+
     @Autowired
-    public RecruiterController(JobRepo jobRepo, UserRepo userRepo) {
-        this.jobRepo = jobRepo;
+    public RecruiterController(VacancyRepo vacancyRepo, UserRepo userRepo, UserService userService) {
+        this.vacancyRepo = vacancyRepo;
         this.userRepo = userRepo;
+        this.userService = userService;
     }
 
-    @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN' || hasRole('ROLE_RECRUITER'))")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Job> createJob(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Job job){
-        log.info("Job creating" + job);
-        job.setAuthor(userRepo.findByUsername(userDetails.getUsername()));
-        return new ResponseEntity<>(jobRepo.save(job), HttpStatus.OK);
+    public ResponseEntity<Vacancy> createVacancy(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Vacancy vacancy){
+        log.info("Vacancy creating" + vacancy);
+        vacancy.setAuthor(userRepo.findByUsername(userDetails.getUsername()));
+        return new ResponseEntity<>(vacancyRepo.save(vacancy), HttpStatus.OK);
     }
 
-    @GetMapping("all")
-    public ResponseEntity<List<Job>> jobList(){
-        if (jobRepo.findAll() == null) {
+    @GetMapping("/all")
+    public ResponseEntity<List<Vacancy>> vacancyList(){
+        log.info("get all vacancies");
+        if (vacancyRepo.findAll() == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(jobRepo.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(vacancyRepo.findAll(), HttpStatus.OK);
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN' || hasRole('ROLE_RECRUITER'))")
+    @GetMapping("/all/author")
+    public ResponseEntity<List<Vacancy>> vacancyListByAuthor(@AuthenticationPrincipal UserDetails userDetails){
+        User user = userService.findByUsername(userDetails.getUsername());
+        if (vacancyRepo.findAllByAuthor(user) == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(vacancyRepo.findAllByAuthor(user), HttpStatus.OK);
     }
 
+    @GetMapping("{id}")
+    public  ResponseEntity<Vacancy> getResume(@PathVariable("id") Vacancy vacancy){
+        log.info("GET");
+        log.info(vacancy.toString() + " successfully get from DB");
+        return new ResponseEntity<>(vacancy, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN' || hasRole('ROLE_RECRUITER'))")
     @PutMapping("{id}")
-    public ResponseEntity<Job> updateJob(@PathVariable ("id") Job jobFromDB, @RequestBody Job resume){
+    public ResponseEntity<Vacancy> updateVacancy(@PathVariable ("id") Vacancy vacancyFromDB, @RequestBody Vacancy resume){
         log.info("PUT");
-        BeanUtils.copyProperties(resume,jobFromDB,"id","author");
-        return new ResponseEntity<>(jobRepo.save(jobFromDB), HttpStatus.OK);
+        BeanUtils.copyProperties(resume, vacancyFromDB,"id","author");
+        return new ResponseEntity<>(vacancyRepo.save(vacancyFromDB), HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public void deleteJob(@PathVariable("id") Job job)
+    @PreAuthorize("hasRole('ROLE_ADMIN' || hasRole('ROLE_RECRUITER'))")
+    @DeleteMapping("{id}")
+    public void deleteVacancy(@PathVariable("id") Vacancy vacancy)
     {   log.info("DELETE");
-        jobRepo.delete(job);
+        vacancyRepo.delete(vacancy);
     }
 
 }

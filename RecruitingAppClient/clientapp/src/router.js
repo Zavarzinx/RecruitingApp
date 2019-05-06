@@ -6,7 +6,11 @@ import Login from './components/Login.vue'
 import Registration from './components/Registration.vue'
 import SingleResume from './components/SingleResume'
 import Admin from './components/Admin'
-
+import Vacancy from './components/Vacancy'
+import SingleVacancy from './components/SingleVacancy'
+import Search from './components/Search'
+import VSearch from './components/VSearch'
+import Home from './components/Home'
 Vue.use(Router);
 
 
@@ -31,7 +35,7 @@ export const router =  new Router({
       component: Registration,
     },
     {
-      path: '/',
+      path: '/login',
       name: 'Login',
       component: Login,
     },
@@ -47,6 +51,35 @@ export const router =  new Router({
       component: Admin,
       meta: { requiresAuth: true,roles:['ADMIN'] }
     },
+    {
+      path: '/vacancy',
+      name: 'Vacancy',
+      component: Vacancy,
+      meta: { requiresAuth: true,roles:['ADMIN','RECRUITER'] }
+    },
+    {
+      path: '/vacancy/:id',
+      name: 'SingleVacancy',
+      component: SingleVacancy,
+      meta: { requiresAuth: true,roles:['ADMIN','RECRUITER','USER'] }
+    },
+    {
+      path: '/search/resume',
+      name: 'Search',
+      component: Search,
+      meta: { requiresAuth: true,roles:['ADMIN','RECRUITER'] }
+    },
+    {
+      path: '/search/vacancy',
+      name: 'VSearch',
+      component: VSearch,
+      meta: { requiresAuth: true,roles:['ADMIN','USER'] }
+    },
+    {
+      path: '/',
+      name: 'Home',
+      component: Home,
+    },
   ],
 
 })
@@ -59,7 +92,7 @@ router.beforeEach((to, from, next) => {
         path: '/',
         query: {redirect: to.fullPath}
       })
-    } else if(to.meta.roles.includes(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'RECRUITER' || 'USER' || 'ADMIN'))) {
+    } else if(to.meta.roles.includes(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN' || x === 'RECRUITER'))) {
       next()
     }
   } else {

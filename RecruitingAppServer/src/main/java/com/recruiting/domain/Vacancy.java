@@ -1,50 +1,35 @@
 package com.recruiting.domain;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
-@Table(name = "resumes")
-@ToString
-@EqualsAndHashCode(of = {"id"})
+@Table(name = "vacancies")
 @Data
-public class Resume {
+@ToString
+@EqualsAndHashCode(of = { "id" })
+public class Vacancy {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @NotBlank(message = "Please fill the resume")
-    private String text;
-
-    private String title;
-
+    Long id;
+    String title;
+    String text;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    private User author;
+    User author;
+
 
     private LocalDateTime createdAt;
 
     private LocalDateTime lastUpdated;
-
-    public Resume() {
-    }
-
-    public Resume(String text, User author) {
-        this.text = text;
-        this.author = author;
-    }
 
     @PrePersist
     protected void prePersist() {
@@ -58,7 +43,7 @@ public class Resume {
     }
 
     @PreRemove
-    public void removeResumeFromUser(){
-        author.getResumes().remove(this);
+    public void removeVacancyFromUser(){
+        author.getVacancies().remove(this);
     }
 }

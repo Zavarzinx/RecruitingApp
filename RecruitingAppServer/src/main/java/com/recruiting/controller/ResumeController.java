@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,9 @@ public class ResumeController {
 
     private final UserService userService;
 
+
     @Autowired
-    public ResumeController(ResumeRepo resumeRepo, UserRepo userRepo, UserService userService) {
+    public ResumeController(ResumeRepo resumeRepo, UserRepo userRepo, UserService userService){
         this.resumeRepo = resumeRepo;
         this.userRepo = userRepo;
         this.userService = userService;
@@ -51,6 +53,7 @@ public class ResumeController {
         return new ResponseEntity<>(resume, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN' || hasRole('ROLE_USER'))")
     @GetMapping("/all/user")
     public ResponseEntity<List<Resume>> getAllResumeByUser(@AuthenticationPrincipal UserDetails userDetails){
         User user = userService.findByUsername(userDetails.getUsername());
@@ -62,20 +65,17 @@ public class ResumeController {
         return new ResponseEntity<>(resumeRepo.findAllByAuthor(user), HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN' || hasRole('ROLE_USER'))")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Resume> createResume(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Resume resume){
-        log.info(userDetails + "current user while creating author");
-        log.info("resume without author" + resume);
-        log.info("username " + userRepo.findByUsername(userDetails.getUsername()));
-        log.info("username " + userDetails.getUsername());
         resume.setAuthor(userRepo.findByUsername(userDetails.getUsername()));
         log.info("POST");
         log.info(resume.toString() + " successfully saved into DB");
         return new ResponseEntity<>(resumeRepo.save(resume), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN' || hasRole('ROLE_USER'))")
     @PutMapping("{id}")
     public ResponseEntity<Resume> updateResume(@PathVariable ("id") Resume resumeFromDB, @RequestBody Resume resume){
         log.info("PUT");
@@ -83,10 +83,13 @@ public class ResumeController {
         return new ResponseEntity<>(resumeRepo.save(resumeFromDB), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN' || hasRole('ROLE_USER'))")
     @DeleteMapping("{id}")
-    public void deleteResume(@PathVariable("id") Resume resume)
-    {   log.info("DELETE");
-        resumeRepo.delete(resume);
+    public ResponseEntity<Void> deleteResume(@PathVariable("id") Resume resume)
+    {   log.info("DELETE" + resume.toString());
+            resumeRepo.delete(resume);
+      //  resumeService.deleteResumeById(resume.getId());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

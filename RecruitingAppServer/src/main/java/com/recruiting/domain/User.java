@@ -4,19 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.util.Collection;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
 @Data
-@ToString(exclude = "resumes")
+@ToString(exclude = {"resumes","vacancies"})
 @EqualsAndHashCode(of = { "id" })
 public class User {
 
@@ -47,7 +44,7 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Job> jobs;
+    private Set<Vacancy> vacancies;
 
 
     public User() {
@@ -58,5 +55,6 @@ public class User {
         this.password = password;
         this.email = email;
     }
+
 
 }

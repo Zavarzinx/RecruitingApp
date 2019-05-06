@@ -94,22 +94,25 @@ export default {
                  })
          })
      },
-     updateResume(){
-         AXIOS.put('/resume/' + this.$route.params.id,
-             {text: this.resume.text},
+     updateUser(){
+         AXIOS.put('/admin/' + this.$route.params.id,
+             {user:this.user},
              {headers: {
                      'Content-Type': 'application/json',
                      'Authorization':localStorage.token,
                      'Access-Control-Allow-Origin': "*"
                  }}).then(response => {
-             this.resume = response.data
+             this.user = response.data
              console.log(response.data)
                  .catch(e => {
                      this.errors.push(e)
                  })
          })
      }
- }
+ },
+    beforeMount(){
+        this.getUser()
+    }
 }
 </script>
 

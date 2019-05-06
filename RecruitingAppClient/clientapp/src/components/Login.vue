@@ -1,31 +1,5 @@
 <template>
     <div>
-        <!--
-    <form>
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    class="form-control"
-                    style="width: 300px"
-                    v-model="username">
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    class="form-control"
-                    style="width: 300px"
-                    v-model="password">
-        </div>
-            </form>
-                    <button type="submit" class="btn btn-primary" @click.prevent="SignIn">Signin</button>
-        -->
-
         <div class="wrapper fadeInDown">
             <div id="formContent">
                 <form>
@@ -44,8 +18,8 @@
         name: 'login',
         data() {
             return {
-                    username: '',
-                    password: ''
+                username: '',
+                password: ''
             }
         },
         methods: {
@@ -57,35 +31,22 @@
                         (response) => {
                             console.log(response)
                             const token = response.data.token;
-                            const roles= response.data.roles
+                            const roles = response.data.roles
                             const username = response.data.username
                             localStorage.setItem('token', 'Bearer_' + token);
-                            localStorage.setItem('roles',JSON.stringify(roles));
+                            console.log(roles)
+                            localStorage.setItem('roles', JSON.stringify(roles));
                             localStorage.setItem('username', username);
-                          if (roles.includes('ADMIN')){
-                              this.$store.commit('setAdmin',true)
-                              console.log("setAdmin")
-                          }
-                            if (roles.includes('RECRUITER')){
-                                this.$store.commit('setRecruiter',true)
-                                console.log("setRec")
-                            }
-                            if (roles.includes('USER')) {
-                                this.$store.commit('setLoggedIn',true)
-                                console.log(this.$store.state.isAdmin)
-                                console.log(this.$store.state.isLoggedIn)
-                                console.log("setUs")
-                            }
                             this.$router.push('/resume')
                             console.log("after push")
                         }
                     )
                     .catch(
                         (error) => console.log(error)
-);
-}
-}
-}
+                    );
+            },
+            }
+        }
 </script>
 
 <style scoped>

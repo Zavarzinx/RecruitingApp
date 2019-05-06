@@ -7,14 +7,17 @@
 
                 <b-collapse id="nav-collapse" is-nav>
                     <b-navbar-nav>
-                        <b-nav-item href="/resume">Resume</b-nav-item>
+                        <b-nav-item  v-if="isUser" href="/resume">Resume</b-nav-item>
                         <b-nav-item v-if="!isLoggedIn" href="/registration">Registration</b-nav-item>
                         <b-nav-item v-if="isAdmin"  href="/admin">Admin</b-nav-item>
+                        <b-nav-item v-if="isRecruiter"  href="/vacancy">Vacancy</b-nav-item>
+                        <b-nav-item v-if="isRecruiter"  href="/search/resume">Search</b-nav-item>
+                        <b-nav-item v-if="isUser"  href="/search/vacancy">Search</b-nav-item>
                     </b-navbar-nav>
 
                     <!-- Right aligned nav items -->
                     <b-navbar-nav class="ml-auto">
-                        <b-nav-item v-if="!isLoggedIn" href="/">Login</b-nav-item>
+                        <b-nav-item v-if="!isLoggedIn" href="/login">Login</b-nav-item>
                         <b-nav-item-dropdown right>
                             <!-- Using 'button-content' slot -->
                             <template slot="button-content"><em>User panel</em></template>
@@ -33,25 +36,17 @@
         name: "Navigation",
         computed: {
             isAdmin() {
-                if (JSON.parse(localStorage.getItem("roles")) === null){
-                    return false
-                }
-                console.log(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN') === 'ADMIN')
-              return JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN') === 'ADMIN'
+               return this.$store.getters.isAdmin
             },
             isRecruiter() {
-                if (JSON.parse(localStorage.getItem("roles")) === null){
-                    return false
-                }
-                console.log(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN') === 'ADMIN')
-                return JSON.parse(localStorage.getItem("roles")).find(x=>x === 'RECRUITER') === 'RECRUITER'
+                return this.$store.getters.isRecruiter
             },
             isLoggedIn() {
-                if (JSON.parse(localStorage.getItem("roles")) === null)
-                    return false
-                console.log(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'USER') === 'USER')
-                return JSON.parse(localStorage.getItem("roles")).find(x=>x === 'USER') === 'USER'
+                return this.$store.getters.isUser || this.$store.getters.isRecruiter || this.$store.getters.isAdmin
             },
+            isUser(){
+                return this.$store.getters.isUser
+            }
         },
         methods: {
             SignOut(){

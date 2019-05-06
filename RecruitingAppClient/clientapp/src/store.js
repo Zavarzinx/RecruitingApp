@@ -27,16 +27,61 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    isAdmin(){
-     return state.Admin === JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN')
+    isAdmin() {
+      console.log(localStorage.getItem("roles"))
+      if (JSON.parse(localStorage.getItem("roles")) === null){
+        return false
+      }
+      console.log("isadmin")
+      console.log(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN') === 'ADMIN')
+      return JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN') === 'ADMIN'
     },
-    isRecruiter(){
-     return state.Recruiter === JSON.parse(localStorage.getItem("roles")).find(x=>x === 'RECRUITER')
+    isRecruiter() {
+        console.log(localStorage.getItem("roles"))
+      if (JSON.parse(localStorage.getItem("roles")) === null){
+        return false
+      }
+      console.log("isrrec")
+      console.log(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'RECRUITER') === 'RECRUITER')
+      return JSON.parse(localStorage.getItem("roles")).find(x=>x === 'RECRUITER') === 'RECRUITER'
+          || JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN') === 'ADMIN'
     },
-    isLoggedIn(){
-     return state.User === JSON.parse(localStorage.getItem("roles")).find(x=>x === 'USER')
-    }
+    isLoggedIn() {
+      console.log(localStorage.getItem("roles"))
+      if (JSON.parse(localStorage.getItem("roles")) === null)
+        return false
+      console.log("isloggedin")
+      console.log(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'USER') === 'USER')
+      return JSON.parse(localStorage.getItem("roles")).find(x=>x === 'USER') === 'USER'
+    },
   },
   getters:{
+    isAdmin() {
+      console.log(localStorage.getItem("roles"))
+      if (JSON.parse(localStorage.getItem("roles")) === null){
+        return false
+      }
+      console.log(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN') === 'ADMIN')
+      return JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN') === 'ADMIN'
+    },
+    isRecruiter() {
+      console.log(localStorage.getItem("roles"))
+      if (JSON.parse(localStorage.getItem("roles")) === null){
+        return false
+      }
+      console.log(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'RECRUITER') === 'RECRUITER')
+      return JSON.parse(localStorage.getItem("roles")).find(x=>x === 'RECRUITER') === 'RECRUITER'
+          || JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN') === 'ADMIN'
+    },
+    isUser() {
+      console.log(localStorage.getItem("roles"))
+      if (JSON.parse(localStorage.getItem("roles")) === null)
+        return false
+      console.log(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'USER') === 'USER')
+      return JSON.parse(localStorage.getItem("roles")).find(x=>x === 'USER') === 'USER'
+    },
+    getAdmin(){
+      return this.state.Admin
+    }
   }
 })

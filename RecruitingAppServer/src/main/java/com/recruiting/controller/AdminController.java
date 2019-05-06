@@ -44,6 +44,6 @@ public class AdminController {
     @PutMapping("{id}")
     public ResponseEntity<User> updateUser(@PathVariable ("id") User userFromDB, @RequestBody User user){
         BeanUtils.copyProperties(user,userFromDB,"id");
-        return new ResponseEntity<>(userService.register(userFromDB), HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateUser(user,userFromDB), HttpStatus.OK);
     }
 }

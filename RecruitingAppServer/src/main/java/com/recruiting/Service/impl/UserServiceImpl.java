@@ -1,19 +1,21 @@
 package com.recruiting.Service.impl;
 
 import com.recruiting.Service.UserService;
+import com.recruiting.domain.ConfirmationToken;
 import com.recruiting.domain.Role;
 import com.recruiting.domain.User;
 import com.recruiting.dto.UserDto;
 import com.recruiting.exception.UserAlreadyExistException;
+import com.recruiting.repo.ConfirmationTokenRepo;
 import com.recruiting.repo.UserRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -21,13 +23,17 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final ConfirmationTokenRepo confirmationTokenRepo;
+    private final EmailSenderService emailSenderService;
+
 
     @Autowired
-    public UserServiceImpl(BCryptPasswordEncoder passwordEncoder, UserRepo userRepo) {
+    public UserServiceImpl(BCryptPasswordEncoder passwordEncoder, UserRepo userRepo, ConfirmationTokenRepo confirmationTokenRepo, EmailSenderService emailSenderService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.confirmationTokenRepo = confirmationTokenRepo;
+        this.emailSenderService = emailSenderService;
     }
-
 
 
     @Override
@@ -39,14 +45,71 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Collections.singleton(Role.USER));
-        user.setActive(true);
+        if (user.getRoles() == null || user.getRoles().isEmpty()){
+            user.setRoles(Collections.singleton(Role.USER));
+        }
+        User userDB = userRepo.save(user);
 
-        User registeredUser = userRepo.save(user);
+        sendMessage(user);
 
-        log.info("IN register - user: {} successfully registered", registeredUser);
+        log.info("user roles " + user.getRoles());
 
-        return registeredUser;
+        log.info("IN register - user: {} successfully registered" + user);
+
+        return userDB;
+    }
+
+    private void sendMessage(User user) {
+        ConfirmationToken confirmationToken = new ConfirmationToken(user);
+        confirmationTokenRepo.save(confirmationToken);
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setSubject("Complete Registration!");
+        mailMessage.setFrom("nazgaard@gmail.com");
+        mailMessage.setText("To confirm your account, please click here : "
+                +"http://localhost:8088/api/registration/confirm-account?token="+confirmationToken.getConfirmationToken());
+
+        emailSenderService.sendEmail(mailMessage);
+    }
+
+    @Override
+    public boolean confirmAccount(String confirmationToken){
+        ConfirmationToken token = confirmationTokenRepo.findByConfirmationToken(confirmationToken);
+        if(token != null) {
+            User user = userRepo.findByEmail(token.getUser().getEmail());
+            user.setActive(true);
+            userRepo.save(user);
+           return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public User updateUser(User user, User userFromDB) {
+
+        String userEmail = userFromDB.getEmail();
+        String email = user.getEmail();
+
+        boolean isEmailChanged = (!email.equals(userEmail)) ||
+                ( !userEmail.equals(email));
+
+        if (isEmailChanged) {
+            user.setEmail(email);
+        }
+
+        if (!StringUtils.isEmpty(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        userRepo.save(user);
+
+        if (isEmailChanged) {
+            sendMessage(user);
+        }
+        return userRepo.save(user);
     }
 
     private boolean emailExist(String email){

@@ -1,4 +1,5 @@
 <template>
+    <!--
     <div class="wrapper fadeInDown">
         <div id="formContent">
             <form>
@@ -7,6 +8,49 @@
                 <input type="email" id="email" class="fadeIn second" name="email" placeholder="email" v-model="user.email">
                 <input type="text" id="firstName" class="fadeIn second" name="firstName" placeholder="firstName" v-model="user.firstName">
                 <input type="text" id="lastName" class="fadeIn second" name="lastName" placeholder="lastName" v-model="user.lastName">
+                <b-form-checkbox-group
+                        id="checkbox-group-1"
+                        v-model="user.roles"
+                        :options="options"
+                        name="flavour-1"
+                ></b-form-checkbox-group>
+                <input type="submit" @click.prevent="SignUp" class="fadeIn fourth"  value="Sign Up">
+            </form>
+        </div>
+    </div>
+ -->
+
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+            <form>
+                <div class="form-group">
+                    <input type="text" id="username" class="form-control" v-validate="'required'" name="username" placeholder="username" v-model="user.username" :class="{ 'is-invalid': submitted && errors.has('username') }"  />
+                    <div v-if="submitted " class="invalid-feedback">{{ errors.first('username') }}</div>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" id="password" class="form-control" v-validate="{ required: true, min: 6 }" name="password" placeholder="password" v-model="user.password" :class="{ 'is-invalid': submitted && errors.has('password') }" />
+                    <div v-if="submitted && errors.has('password')" class="invalid-feedback">{{ errors.first('password') }}</div>
+                </div>
+
+                <div class="form-group">
+                    <input type="email" id="email" class="form-control"  v-validate="'required|email'" name="email" placeholder="email" v-model="user.email" :class="{ 'is-invalid': submitted && errors.has('email') }" />
+                    <div v-if="submitted && errors.has('email')" class="invalid-feedback">{{ errors.first('email') }}</div>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="firstName" class="form-control"  v-validate="'required'" name="firstName" placeholder="firstName" v-model="user.firstName" :class="{ 'is-invalid': submitted && errors.has('firstName') }" />
+                    <div v-if="submitted && errors.has('firstName')" class="invalid-feedback">{{ errors.first('firstName') }}</div>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="lastName" class="form-control"  v-validate="'required'" name="lastName" placeholder="lastName" v-model="user.lastName" :class="{ 'is-invalid': submitted && errors.has('lastName') }" />
+                    <div v-if="submitted && errors.has('lastName')" class="invalid-feedback">{{ errors.first('lastName') }}</div>
+                </div>
+                <b-form-checkbox-group
+                        id="checkbox-group-1"
+                        v-model="user.roles"
+                        :options="options"
+                        name="flavour-1"
+                ></b-form-checkbox-group>
                 <input type="submit" @click.prevent="SignUp" class="fadeIn fourth"  value="Sign Up">
             </form>
         </div>
@@ -16,34 +60,47 @@
 <script>
 import {AXIOS} from './http-common'
 export default {
- name: 'registration',
- data() {
-     return {
-         user: {
-             username: '',
-             email: '',
-             password: '',
-             firstName:'',
-             lastName:''
-         }
-     }
- },
- methods: {
-     SignUp() {
-         AXIOS.post('/registration',
-             {username: this.user.username, email: this.user.email, password: this.user.password,
-                 firstName: this.user.firstName,lastName: this.user.lastName})
-             .then(
-                 (response) => {
-                     console.log(response)
-                     this.$router.push('/')
-                 }
-             )
-             .catch(
-                 (error) => console.log(error)
-             );
-     }
- }
+    name: 'registration',
+    data() {
+        return {
+            user: {
+                username: '',
+                password: '',
+                email:'',
+                firstName: '',
+                lastName: '',
+                roles: []
+            },
+            submitted: false,
+            options: [
+                {text: 'Recruiter', value: 'RECRUITER'},
+                {text: 'User', value: 'USER'}
+            ]
+        }
+    },
+    methods: {
+        SignUp() {
+           this.submitted = true
+            this.$validator.validate().then(valid => {
+                if (valid) {
+                    AXIOS.post('/registration',
+                        {
+                            username: this.user.username, email: this.user.email, password: this.user.password,
+                            firstName: this.user.firstName, lastName: this.user.lastName, roles: this.user.roles
+                        })
+                        .then(
+                            (response) => {
+                                console.log(response)
+                                this.$router.push('/login')
+                            }
+                        )
+                        .catch(
+                            (error) => console.log(error)
+                        );
+                }
+            })
+        }
+    }
 }
 </script>
 

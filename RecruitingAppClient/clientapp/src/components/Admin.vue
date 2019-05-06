@@ -1,8 +1,5 @@
 <template>
     <div class="Admin">
-<div class="btn-toolbar">
-    <b-button @click="getUsers()"  variant="primary">Get users</b-button>
-</div>
 <div class="well">
     <li v-for="item in users">
     <table class="table">
@@ -71,7 +68,10 @@ methods: {
             })
 
     }
-}
+},
+    beforeMount(){
+        this.getUsers()
+    }
 }
 </script>
 

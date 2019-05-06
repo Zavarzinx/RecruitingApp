@@ -3,6 +3,8 @@ package com.recruiting.controller;
 import com.recruiting.Service.UserService;
 import com.recruiting.domain.User;
 import com.recruiting.dto.AuthenticationRequestDto;
+import com.recruiting.exception.JwtAuthenticationException;
+import com.recruiting.exception.UserAlreadyExistException;
 import com.recruiting.security.jwt.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +41,15 @@ public class AuthenticationController {
     public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto) {
         try {
             String username = requestDto.getUsername();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
             User user = userService.findByUsername(username);
-
             if (user == null) {
                 throw new UsernameNotFoundException("User with username: " + username + " not found");
             }
+
+            if (!user.isActive()){
+                throw new JwtAuthenticationException("User with username: " + username + "is not activated");
+            }
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
 
             String token = jwtTokenProvider.createToken(username, user.getRoles());
 

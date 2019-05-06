@@ -1,88 +1,90 @@
 <template>
-    <div class="resume">
 
-<div class="container">
-    <div class="row">
-        <form role="form" class="col-md-9 go-right">
-            <h2>Submit new resume</h2>
-            <div class="form-group">
-                <input id="title" name="title" type="text" class="form-control" required v-model="resume.title">
-                <label for="title">Resume Name</label>
+    <div class="vacancy">
+
+        <div class="container">
+            <div class="row">
+                <form role="form" class="col-md-9 go-right">
+                    <h2>Submit new vacancy</h2>
+                    <div class="form-group">
+                        <input id="title" name="title" type="text" class="form-control" required v-model="vacancy.title">
+                        <label for="title">Vacancy Title</label>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="text" name="text" class="form-control" required v-model="vacancy.text"></textarea>
+                        <label for="title">Message</label>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <textarea id="text" name="text" class="form-control" required v-model="resume.text"></textarea>
-                <label for="title">Message</label>
+
+            <b-button @click="createVacancy()" variant="primary">Submit vacancy</b-button>
+            <div  v-for="list in vacancies" :key="list.id" class="single-resume">
+                <h2> <router-link :to="{ name: 'SingleVacancy', params: { id: list.id }}">{{ list.title }}</router-link></h2>
+                <article>{{ list.text }}</article>
             </div>
-        </form>
+
+
+        </div>
+
     </div>
-
-    <b-button @click="createResume()" variant="primary">Submit</b-button>
-    <div  v-for="list in resumes" :key="list.id" class="single-resume">
-        <h2> <router-link :to="{ name: 'SingleResume', params: { id: list.id }}">{{ list.title }}</router-link></h2>
-        <article>{{ list.text }}</article>
-    </div>
-</div>
-
-</div>
-
 </template>
-<script>
-import {AXIOS} from './http-common'
-export default {
-name: 'resume',
-data() {
-    return {
-        response: [],
-        errors: [],
-        resumes: [],
-        resume: {
-            title:'',
-            text: '',
-            author: '',
-            id: 0
-        },
-    }
-},
-    methods: {
-        createResume() {
-            console.log(this.resume.text + "resume")
-            console.log(localStorage.token + " token")
-            AXIOS.post('/resume',
-                {text: this.resume.text,title:this.resume.title},
-                {headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization':localStorage.token,
-                        'Access-Control-Allow-Origin': "*"
-            }})
-                .then(this.getResumes(),
-                    (response) => console.log(response),
-                    this.getResumes()
-                )
-                .catch(
-                    (error) => console.log(error)
-                );
-        },
-        getResumes(){
-            AXIOS.get('/resume/all/user',
-                {headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization':localStorage.token,
-                        'Access-Control-Allow-Origin': "*"
-                    }})
-                .then(response => {
-                    this.resumes = response.data
-                    console.log(response.data)
-                        .catch(e => {
-                            this.errors.push(e)
-                        })
-                })
 
+<script>
+    import {AXIOS} from './http-common'
+    export default {
+        name: "Vacancy",
+        data() {
+            return {
+                response: [],
+                errors: [],
+                vacancies: [],
+                vacancy: {
+                    title: '',
+                    text: '',
+                    author: '',
+                    id: 0
+                }
+            }
+        },
+        methods:{
+            createVacancy() {
+                console.log(this.vacancy.text + "vacancy")
+                AXIOS.post('/recruiter',
+                    {text: this.vacancy.text,title:this.vacancy.title},
+                    {headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization':localStorage.token,
+                            'Access-Control-Allow-Origin': "*"
+                        }})
+                    .then(this.getVacancies(),
+                        (response) => console.log(response)
+                    )
+                    .catch(
+                        (error) => console.log(error)
+                    );
+            },
+            getVacancies(){
+                console.log("get")
+                AXIOS.get('/recruiter/all/author',
+                    {headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization':localStorage.token,
+                            'Access-Control-Allow-Origin': "*"
+                        }})
+                    .then(response => {
+                        this.vacancies = response.data
+                        console.log(response.data)
+                            .catch(e => {
+                                this.errors.push(e)
+                            })
+                    })
+
+            }
+        },
+        beforeMount(){
+            this.getVacancies()
         }
-    },
-    beforeMount(){
-    this.getResumes()
-    },
-}
+    }
 </script>
 
 <style scoped>
@@ -252,4 +254,4 @@ data() {
         width: 40%;
         padding-top: 5px;
     }
-    </style>
+</style>

@@ -26,6 +26,9 @@ public class Vacancy {
     @JoinColumn(name = "user_id")
     User author;
 
+    private String email;
+
+    private String phone;
 
     private LocalDateTime createdAt;
 

@@ -4,13 +4,27 @@
             <div class="row">
                 <form role="form" class="col-md-9 go-right">
                     <h2>Resume info</h2>
+                    <div>{{resume.createdAt}} Creation time</div>
+                    <div>{{resume.lastUpdated}} Last updated</div>
                     <div class="form-group">
-                        <input id="title" name="title" type="text" class="form-control" required v-model="resume.title">
-                        <label for="title">Resume Name</label>
+                        <input id="title" name="title"  v-validate="'required'" type="text" class="form-control" required v-model="resume.title" :class="{ 'is-invalid': submitted && vErrors.has('title') }"/>
+                        <label for="title">Resume Title</label>
+                        <div v-if="submitted && vErrors.has('title') " class="invalid-feedback">{{ vErrors.first('title') }}</div>
                     </div>
                     <div class="form-group">
-                        <textarea id="text" name="text" class="form-control" required v-model="resume.text"></textarea>
+                        <textarea id="text" name="text"  v-validate="'required'" class="form-control" required v-model="resume.text" :class="{ 'is-invalid': submitted && vErrors.has('text') }"/>
                         <label for="title">Message</label>
+                        <div v-if="submitted && vErrors.has('text') " class="invalid-feedback">{{ vErrors.first('text') }}</div>
+                    </div>
+                    <div class="form-group">
+                        <input id="email" name="email" v-validate="'required|email'" class="form-control" required v-model="resume.email" :class="{ 'is-invalid': submitted && vErrors.has('email') }"/>
+                        <label for="email">Email</label>
+                        <div v-if="submitted && vErrors.has('email') " class="invalid-feedback">{{ vErrors.first('email') }}</div>
+                    </div>
+                    <div class="form-group">
+                        <input id="phone" name="phone"  v-validate="'required'" class="form-control" required v-model="resume.phone" :class="{ 'is-invalid': submitted && vErrors.has('phone') }"/>
+                        <label for="phone">Phone number</label>
+                        <div v-if="submitted && vErrors.has('phone') " class="invalid-feedback">{{ vErrors.first('phone') }}</div>
                     </div>
                 </form>
             </div>
@@ -34,8 +48,13 @@ data() {
             title:'',
             text: '',
             author: '',
+            email:'',
+            phone:'',
+            createdAt:'',
+            lastUpdated:'',
             id: 0
         },
+        submitted:false,
     }
 },
     computed: {
@@ -68,8 +87,12 @@ methods: {
         })
     },
     updateResume(){
+        this.submitted = true;
+        this.$validator.validate().then(valid => {
+            if(valid){
         AXIOS.put('/resume/' + this.$route.params.id,
-            {text: this.resume.text,title:this.resume.title},
+            {text: this.resume.text,title:this.resume.title,phone:this.resume.phone,
+                email:this.resume.email},
             {headers: {
                     'Content-Type': 'application/json',
                     'Authorization':localStorage.token,
@@ -79,7 +102,8 @@ methods: {
             console.log(response.data)
                 .catch(e => {
                     this.errors.push(e)
-                })
+                });
+        })}
         })
     },
     deleteResume(){

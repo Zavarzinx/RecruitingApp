@@ -13,7 +13,9 @@ import {Vuelidate} from "vuelidate";
 Vue.config.productionTip = false
 
 // Bootstrap
-Vue.use(VeeValidate);
+Vue.use(VeeValidate, {
+  errorBagName: 'vErrors'
+});
 Vue.use(BootstrapVue)
 Vue.use(VueRouter)
 Vue.use(Vuelidate);

@@ -27,6 +27,10 @@ public class Resume {
     @NotBlank(message = "Please fill the resume")
     private String text;
 
+    private String email;
+
+    private String phone;
+
     private String title;
 
     @JsonIgnore

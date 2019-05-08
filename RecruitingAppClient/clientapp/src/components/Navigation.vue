@@ -52,7 +52,8 @@
             SignOut(){
                 localStorage.removeItem("token")
                 localStorage.removeItem('roles')
-                this.$router.push("/")
+                this.$router.push("/login")
+                location.reload();
             }
         }
     }

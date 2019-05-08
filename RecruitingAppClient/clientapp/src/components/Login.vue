@@ -2,6 +2,7 @@
     <div>
         <div class="wrapper fadeInDown">
             <div id="formContent">
+                <b-alert v-if="credential" show variant="danger">Wrong credentials</b-alert>
                 <form>
                     <input type="text" id="username" class="fadeIn second" name="username" placeholder="username" v-model="password">
                     <input type="password" id="password" class="fadeIn third" name="password" placeholder="password" v-model="username">
@@ -19,7 +20,8 @@
         data() {
             return {
                 username: '',
-                password: ''
+                password: '',
+                credential:false
             }
         },
         methods: {
@@ -29,7 +31,6 @@
                     {username: this.username, password: this.password})
                     .then(
                         (response) => {
-                            console.log(response)
                             const token = response.data.token;
                             const roles = response.data.roles
                             const username = response.data.username
@@ -38,11 +39,17 @@
                             localStorage.setItem('roles', JSON.stringify(roles));
                             localStorage.setItem('username', username);
                             this.$router.push('/resume')
+                            location.reload();
                             console.log("after push")
                         }
                     )
                     .catch(
-                        (error) => console.log(error)
+                        (error) => {
+                            console.log(error)
+                            if (error.response.status === 403){
+                                this.credential = true
+                            }
+                        }
                     );
             },
             }

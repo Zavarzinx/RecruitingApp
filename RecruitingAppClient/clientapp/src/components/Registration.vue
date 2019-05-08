@@ -24,26 +24,26 @@
         <div id="formContent">
             <form>
                 <div class="form-group">
-                    <input type="text" id="username" class="form-control" v-validate="'required'" name="username" placeholder="username" v-model="user.username" :class="{ 'is-invalid': submitted && errors.has('username') }"  />
-                    <div v-if="submitted " class="invalid-feedback">{{ errors.first('username') }}</div>
+                    <input type="text" id="username" class="form-control" v-validate="'required'" name="username" placeholder="username" required v-model="user.username" :class="{ 'is-invalid': submitted && vErrors.has('username') }"  />
+                    <div v-if="submitted && vErrors.has('username') " class="invalid-feedback">{{ vErrors.first('username') }}</div>
                 </div>
 
                 <div class="form-group">
-                    <input type="password" id="password" class="form-control" v-validate="{ required: true, min: 6 }" name="password" placeholder="password" v-model="user.password" :class="{ 'is-invalid': submitted && errors.has('password') }" />
-                    <div v-if="submitted && errors.has('password')" class="invalid-feedback">{{ errors.first('password') }}</div>
+                    <input type="password" id="password" class="form-control" v-validate="{ required: true, min: 6 }" name="password" placeholder="password" v-model="user.password" :class="{ 'is-invalid': submitted && vErrors.has('password') }" />
+                    <div v-if="submitted && vErrors.has('password')" class="invalid-feedback">{{ vErrors.first('password') }}</div>
                 </div>
 
                 <div class="form-group">
-                    <input type="email" id="email" class="form-control"  v-validate="'required|email'" name="email" placeholder="email" v-model="user.email" :class="{ 'is-invalid': submitted && errors.has('email') }" />
-                    <div v-if="submitted && errors.has('email')" class="invalid-feedback">{{ errors.first('email') }}</div>
+                    <input type="email" id="email" class="form-control"  v-validate="'required|email'" name="email" placeholder="email" v-model="user.email" :class="{ 'is-invalid': submitted && vErrors.has('email') }" />
+                    <div v-if="submitted && vErrors.has('email')" class="invalid-feedback">{{ vErrors.first('email') }}</div>
                 </div>
                 <div class="form-group">
-                    <input type="text" id="firstName" class="form-control"  v-validate="'required'" name="firstName" placeholder="firstName" v-model="user.firstName" :class="{ 'is-invalid': submitted && errors.has('firstName') }" />
-                    <div v-if="submitted && errors.has('firstName')" class="invalid-feedback">{{ errors.first('firstName') }}</div>
+                    <input type="text" id="firstName" class="form-control"  v-validate="'required'" name="firstName" placeholder="firstName" v-model="user.firstName" :class="{ 'is-invalid': submitted && vErrors.has('firstName') }" />
+                    <div v-if="submitted && vErrors.has('firstName')" class="invalid-feedback">{{ vErrors.first('firstName') }}</div>
                 </div>
                 <div class="form-group">
-                    <input type="text" id="lastName" class="form-control"  v-validate="'required'" name="lastName" placeholder="lastName" v-model="user.lastName" :class="{ 'is-invalid': submitted && errors.has('lastName') }" />
-                    <div v-if="submitted && errors.has('lastName')" class="invalid-feedback">{{ errors.first('lastName') }}</div>
+                    <input type="text" id="lastName" class="form-control"  v-validate="'required'" name="lastName" placeholder="lastName" v-model="user.lastName" :class="{ 'is-invalid': submitted && vErrors.has('lastName') }" />
+                    <div v-if="submitted && vErrors.has('lastName')" class="invalid-feedback">{{ vErrors.first('lastName') }}</div>
                 </div>
                 <b-form-checkbox-group
                         id="checkbox-group-1"

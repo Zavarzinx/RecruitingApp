@@ -1,6 +1,8 @@
 HELP.md
 /RecruitingAppServer/target/
-/RecruitingAppClient/clientapp/node_modules
+/RecruitingAppClient/node_modules
+/RecruitingAppClient/node
+/RecruitingAppClient/dist
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###

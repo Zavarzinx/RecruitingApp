@@ -10,7 +10,10 @@ spring-boot-vuejs
 │ └── pom.xml
 └── pom.xml     → Maven parent pom managing both modules
 ```
-##First App run
+## Import
+import project into your IDE
+
+## First App run
 Inside the root directory, do a:
 ```
 mvn clean install

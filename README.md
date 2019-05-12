@@ -19,6 +19,8 @@ Inside the root directory, do a:
 mvn clean install
 ```
 Run our Spring Boot App:
+Just run main ServerApplication
+or use maven:
 ```
 mvn --projects RecruitingAppServer spring-boot:run
 ```

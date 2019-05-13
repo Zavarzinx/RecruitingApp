@@ -129,6 +129,7 @@
                                  referencedColumnNames="id"
                                  referencedTableName="users"/>
     </changeSet>
+
     <changeSet id="1.0.7" author="zavarzin">
         <insert tableName="users">
             <column name="username" value="admin"></column>

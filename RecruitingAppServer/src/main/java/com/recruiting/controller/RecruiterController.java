@@ -72,9 +72,8 @@ public class RecruiterController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN' || hasRole('ROLE_RECRUITER'))")
     @PutMapping("{id}")
-    public ResponseEntity<Vacancy> updateVacancy(@PathVariable ("id") Vacancy vacancyFromDB, @RequestBody Vacancy resume){
-        log.info("PUT");
-        BeanUtils.copyProperties(resume, vacancyFromDB,"id","author");
+    public ResponseEntity<Vacancy> updateVacancy(@PathVariable ("id") Vacancy vacancyFromDB, @RequestBody Vacancy vacancy){
+        BeanUtils.copyProperties(vacancy, vacancyFromDB,"id","author","createdAt");
         return new ResponseEntity<>(vacancyRepo.save(vacancyFromDB), HttpStatus.OK);
     }
 

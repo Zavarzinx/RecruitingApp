@@ -143,6 +143,10 @@
             <column name="user_id" value="1"></column>
             <column name="roles" value="ADMIN"></column>
         </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="1"></column>
+            <column name="roles" value="USER"></column>
+        </insert>
     </changeSet>
 
 

@@ -79,7 +79,7 @@ public class ResumeController {
     @PutMapping("{id}")
     public ResponseEntity<Resume> updateResume(@PathVariable ("id") Resume resumeFromDB, @RequestBody Resume resume){
         log.info("PUT");
-        BeanUtils.copyProperties(resume,resumeFromDB,"id","author");
+        BeanUtils.copyProperties(resume,resumeFromDB,"id","author","createdAt");
         return new ResponseEntity<>(resumeRepo.save(resumeFromDB), HttpStatus.OK);
     }
 

@@ -30,8 +30,10 @@ public class Vacancy {
 
     private String phone;
 
+    @Column(name = "creation_date")
     private LocalDateTime createdAt;
 
+    @Column(name = "last_update")
     private LocalDateTime lastUpdated;
 
     @PrePersist

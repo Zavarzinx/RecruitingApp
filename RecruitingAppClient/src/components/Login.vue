@@ -38,7 +38,11 @@
                             console.log(roles)
                             localStorage.setItem('roles', JSON.stringify(roles));
                             localStorage.setItem('username', username);
-                            this.$router.push('/resume')
+                            if (roles.includes('RECRUITER')){
+                                this.$router.push('/vacancy')
+                            } else {
+                                this.$router.push('/resume')
+                            }
                             location.reload();
                             console.log("after push")
                         }

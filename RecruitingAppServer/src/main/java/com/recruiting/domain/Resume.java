@@ -22,7 +22,7 @@ import java.util.Date;
 @Data
 public class Resume {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy =GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "Please fill the resume")
     private String text;
@@ -38,8 +38,10 @@ public class Resume {
     @JoinColumn(name = "user_id")
     private User author;
 
+    @Column(name = "creation_date")
     private LocalDateTime createdAt;
 
+    @Column(name = "last_update")
     private LocalDateTime lastUpdated;
 
     public Resume() {

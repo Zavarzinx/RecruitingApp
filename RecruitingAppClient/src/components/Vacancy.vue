@@ -76,7 +76,8 @@
                             'Access-Control-Allow-Origin': "*"
                         }})
                     .then(this.getVacancies(),
-                        (response) => console.log(response)
+                        (response) => console.log(response),
+                        this.getVacancies()
                     )
                     .catch(
                         (error) => console.log(error)

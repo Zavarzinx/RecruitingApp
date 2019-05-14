@@ -27,7 +27,7 @@ export const router =  new Router({
       path: '/resume/:id',
       name: 'SingleResume',
       component: SingleResume,
-      meta: { requiresAuth: true,roles:['USER','ADMIN'] }
+      meta: { requiresAuth: true,roles:['USER','ADMIN','RECRUITER'] }
     },
     {
       path: '/registration',
@@ -92,7 +92,7 @@ router.beforeEach((to, from, next) => {
         path: '/',
         query: {redirect: to.fullPath}
       })
-    } else if(to.meta.roles.includes(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN' || x === 'RECRUITER'))) {
+    } else if(to.meta.roles.includes(JSON.parse(localStorage.getItem("roles")).find(x=>x === 'ADMIN' || x === 'RECRUITER')) || to.meta.roles.includes(JSON.parse(localStorage.getItem("roles")).find(x=>x==='USER'))) {
       next()
     }
   } else {

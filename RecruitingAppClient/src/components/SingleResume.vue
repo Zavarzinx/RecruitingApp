@@ -4,12 +4,19 @@
             <div class="row">
                 <form role="form" class="col-md-9 go-right">
                     <h2>Resume info</h2>
+                    <router-link :to="{ name: 'SingleProfile', params: {id: authorId }}">
+                        <b-button>Author profile</b-button>
+                    </router-link>
                     <div>{{resume.createdAt}} Creation time</div>
-                    <div>{{resume.lastUpdated}} Last updated</div>
                     <div class="form-group">
                         <input id="title" name="title"  v-validate="'required'" type="text" class="form-control" required v-model="resume.title" :class="{ 'is-invalid': submitted && vErrors.has('title') }"/>
                         <label for="title">Resume Title</label>
                         <div v-if="submitted && vErrors.has('title') " class="invalid-feedback">{{ vErrors.first('title') }}</div>
+                    </div>
+                    <div class="form-group">
+                        <input id="region" name="region"  v-validate="'required'" type="text" class="form-control" required v-model="resume.region" :class="{ 'is-invalid': submitted && vErrors.has('region') }"/>
+                        <label for="region">Location region</label>
+                        <div v-if="submitted && vErrors.has('region') " class="invalid-feedback">{{ vErrors.first('region') }}</div>
                     </div>
                     <div class="form-group">
                         <textarea id="text" name="text"  v-validate="'required'" class="form-control" required v-model="resume.text" :class="{ 'is-invalid': submitted && vErrors.has('text') }"/>
@@ -28,11 +35,11 @@
                     </div>
                 </form>
             </div>
-            <b-button @click="getResume()"  variant="primary">Get resume</b-button>
             <b-button @click="updateResume()" v-if="isLoggedIn" variant="primary">Update resume</b-button>
             <b-button @click="deleteResume()" v-if="isLoggedIn"  variant="primary">Delete resume</b-button>
             </div>
         </div>
+
 
 </template>
 
@@ -47,13 +54,14 @@ data() {
         resume: {
             title:'',
             text: '',
-            author: '',
             email:'',
             phone:'',
             createdAt:'',
             lastUpdated:'',
+            region:'',
             id: 0
         },
+        authorId:0,
         submitted:false,
     }
 },
@@ -86,13 +94,30 @@ methods: {
                 })
         })
     },
+    getAuthor(){
+        AXIOS.get('/resume/author/' + this.$route.params.id,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.token,
+                    'Access-Control-Allow-Origin': "*"
+                }
+            }).then(response => {
+            this.authorId = response.data
+            console.log(response.data)
+                console.log("getAuthor")
+                .catch(e => {
+                    this.errors.push(e)
+                })
+        })
+    },
     updateResume(){
         this.submitted = true;
         this.$validator.validate().then(valid => {
             if(valid){
         AXIOS.put('/resume/' + this.$route.params.id,
             {text: this.resume.text,title:this.resume.title,phone:this.resume.phone,
-                email:this.resume.email},
+                email:this.resume.email,region:this.resume.region},
             {headers: {
                     'Content-Type': 'application/json',
                     'Authorization':localStorage.token,
@@ -123,6 +148,7 @@ methods: {
 },
     beforeMount(){
         this.getResume()
+            this.getAuthor()
     }
 }
 </script>
@@ -164,6 +190,15 @@ methods: {
         padding: 1px 6px;
         z-index: 2;
         text-transform: uppercase;
+    }
+    .profile-edit-btn{
+        border: none;
+        border-radius: 1.5rem;
+        width: 70%;
+        padding: 2%;
+        font-weight: 600;
+        color: #6c757d;
+        cursor: pointer;
     }
     form label {
         -webkit-transition: background 0.2s, color 0.2s, top 0.2s, bottom 0.2s, right 0.2s, left 0.2s;
@@ -207,4 +242,5 @@ methods: {
         width: 40%;
         padding-top: 5px;
     }
+
 </style>

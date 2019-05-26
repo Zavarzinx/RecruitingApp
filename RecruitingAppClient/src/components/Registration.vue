@@ -19,9 +19,10 @@
         </div>
     </div>
  -->
-
+<div>
     <div class="wrapper fadeInDown">
-        <div id="formContent">
+
+        <div id="formContentUser">
             <form>
                 <div class="form-group">
                     <input type="text" id="username" class="form-control" v-validate="'required'" name="username" placeholder="username" required v-model="user.username" :class="{ 'is-invalid': submitted && vErrors.has('username') }"  />
@@ -45,18 +46,20 @@
                     <input type="text" id="lastName" class="form-control"  v-validate="'required'" name="lastName" placeholder="lastName" v-model="user.lastName" :class="{ 'is-invalid': submitted && vErrors.has('lastName') }" />
                     <div v-if="submitted && vErrors.has('lastName')" class="invalid-feedback">{{ vErrors.first('lastName') }}</div>
                 </div>
-                <b-form-checkbox-group
-                        id="checkbox-group-1"
-                        v-model="user.roles"
-                        :options="options"
-                        name="flavour-1"
-                ></b-form-checkbox-group>
+                <div class="form-group">
+                    <input type="text" id="busyness" class="form-control"  v-validate="'required'" name="busyness" placeholder="company/busyness" v-model="user.busyness" :class="{ 'is-invalid': submitted && vErrors.has('busyness') }" />
+                    <div v-if="submitted && vErrors.has('busyness')" class="invalid-feedback">{{ vErrors.first('busyness') }}</div>
+                </div>
+                <b-form-group label="Role">
+                    <b-form-radio v-model="user.roles" name="user" value="USER">User</b-form-radio>
+                    <b-form-radio v-model="user.roles" name="recruiter" value="RECRUITER">Recruiter</b-form-radio>
+                </b-form-group>
                 <input type="submit" @click.prevent="SignUp" class="fadeIn fourth"  value="Sign Up">
             </form>
         </div>
     </div>
+</div>
 </template>
-
 <script>
 import {AXIOS} from './http-common'
 export default {
@@ -69,6 +72,7 @@ export default {
                 email:'',
                 firstName: '',
                 lastName: '',
+                busyness:'',
                 roles: []
             },
             submitted: false,
@@ -80,13 +84,17 @@ export default {
     },
     methods: {
         SignUp() {
+            console.log(this.user)
+            console.log(this.user.roles)
+            const roles = [this.user.roles]
            this.submitted = true
             this.$validator.validate().then(valid => {
                 if (valid) {
                     AXIOS.post('/registration',
                         {
                             username: this.user.username, email: this.user.email, password: this.user.password,
-                            firstName: this.user.firstName, lastName: this.user.lastName, roles: this.user.roles
+                            firstName: this.user.firstName, lastName: this.user.lastName, roles: roles,
+                            busyness:this.user.busyness
                         })
                         .then(
                             (response) => {

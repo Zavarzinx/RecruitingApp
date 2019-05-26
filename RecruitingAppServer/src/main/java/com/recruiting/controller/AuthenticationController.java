@@ -8,6 +8,7 @@ import com.recruiting.exception.UserAlreadyExistException;
 import com.recruiting.security.jwt.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -39,7 +40,6 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto) {
-        try {
             String username = requestDto.getUsername();
             User user = userService.findByUsername(username);
             if (user == null) {
@@ -59,8 +59,10 @@ public class AuthenticationController {
             response.put("roles",user.getRoles());
 
             return ResponseEntity.ok(response);
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
-        }
+    }
+    @ResponseStatus(value=HttpStatus.NOT_FOUND,reason = "User with that username not found")
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public void UsernameNotFoundExceptionHandler()
+    {
     }
 }

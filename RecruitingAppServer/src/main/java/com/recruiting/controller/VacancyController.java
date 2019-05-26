@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping(value = "/api/recruiter")
-public class RecruiterController {
+public class VacancyController {
 
     private final VacancyRepo vacancyRepo;
 
@@ -30,7 +30,7 @@ public class RecruiterController {
     private final UserService userService;
 
     @Autowired
-    public RecruiterController(VacancyRepo vacancyRepo, UserRepo userRepo, UserService userService) {
+    public VacancyController(VacancyRepo vacancyRepo, UserRepo userRepo, UserService userService) {
         this.vacancyRepo = vacancyRepo;
         this.userRepo = userRepo;
         this.userService = userService;
@@ -64,7 +64,7 @@ public class RecruiterController {
     }
 
     @GetMapping("{id}")
-    public  ResponseEntity<Vacancy> getResume(@PathVariable("id") Vacancy vacancy){
+    public  ResponseEntity<Vacancy> getVacancy(@PathVariable("id") Vacancy vacancy){
         log.info("GET");
         log.info(vacancy.toString() + " successfully get from DB");
         return new ResponseEntity<>(vacancy, HttpStatus.OK);
@@ -84,4 +84,10 @@ public class RecruiterController {
         vacancyRepo.delete(vacancy);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN' || hasRole('ROLE_USER'))")
+    @GetMapping("/author/{id}")
+    public ResponseEntity<Long> getAuthorId(@PathVariable("id") Vacancy vacancy){
+        log.info("author GET");
+        return new ResponseEntity<>(vacancy.getAuthor().getId(),HttpStatus.OK);
+    }
 }

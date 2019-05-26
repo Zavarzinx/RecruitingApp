@@ -1,6 +1,7 @@
 package com.recruiting.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,9 +31,13 @@ public class Vacancy {
 
     private String phone;
 
+    private String region;
+
+    @JsonFormat(pattern="dd/MM/yyyy")
     @Column(name = "creation_date")
     private LocalDateTime createdAt;
 
+    @JsonFormat(pattern="dd/MM/yyyy")
     @Column(name = "last_update")
     private LocalDateTime lastUpdated;
 

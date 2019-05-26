@@ -92,5 +92,11 @@ public class ResumeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN' || hasRole('ROLE_USER'))")
+    @GetMapping("/author/{id}")
+    public ResponseEntity<Long> getAuthorId(@PathVariable("id") Resume resume){
+        log.info("author GET");
+        return new ResponseEntity<>(resume.getAuthor().getId(),HttpStatus.OK);
+    }
 
 }

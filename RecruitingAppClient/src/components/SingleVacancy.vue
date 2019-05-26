@@ -4,12 +4,20 @@
             <div class="row">
                 <form role="form" class="col-md-9 go-right">
                     <h2>Vacancy info</h2>
+                    <router-link :to="{ name: 'SingleProfile', params: {id: authorId }}">
+                        <b-button>Author profile</b-button>
+                    </router-link>
                     <div>{{vacancy.createdAt}} Creation time</div>
                     <div>{{vacancy.lastUpdated}} Last updated</div>
                     <div class="form-group">
                         <input id="title" name="title"  v-validate="'required'" type="text" class="form-control" required v-model="vacancy.title" :class="{ 'is-invalid': submitted && vErrors.has('title') }"/>
                         <label for="title">Vacancy Title</label>
                         <div v-if="submitted && vErrors.has('title') " class="invalid-feedback">{{ vErrors.first('title') }}</div>
+                    </div>
+                    <div class="form-group">
+                        <input id="region" name="region"  v-validate="'required'" type="text" class="form-control" required v-model="vacancy.region" :class="{ 'is-invalid': submitted && vErrors.has('region') }"/>
+                        <label for="region">Location region</label>
+                        <div v-if="submitted && vErrors.has('region') " class="invalid-feedback">{{ vErrors.first('region') }}</div>
                     </div>
                     <div class="form-group">
                         <textarea id="text" name="text"  v-validate="'required'" class="form-control" required v-model="vacancy.text" :class="{ 'is-invalid': submitted && vErrors.has('text') }"/>
@@ -28,7 +36,6 @@
                     </div>
                 </form>
             </div>
-            <b-button @click="getVacancy()"  variant="primary">Get vacancy</b-button>
             <b-button @click="updateVacancy()" v-if="isRecruiter" variant="primary">Update vacancy</b-button>
             <b-button @click="deleteVacancy()" v-if="isRecruiter" variant="primary">Delete vacancy</b-button>
         </div>
@@ -53,8 +60,10 @@
                     phone:'',
                     createdAt:'',
                     lastUpdated:'',
+                    region:'',
                     id: 0
                 },
+                authorId:0,
                 submitted:false
             }
         },
@@ -87,6 +96,23 @@
                         })
                 })
             },
+            getAuthor(){
+                AXIOS.get('/recruiter/author/' + this.$route.params.id,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': localStorage.token,
+                            'Access-Control-Allow-Origin': "*"
+                        }
+                    }).then(response => {
+                    this.authorId = response.data
+                    console.log(response.data)
+                    console.log("getAuthor")
+                        .catch(e => {
+                            this.errors.push(e)
+                        })
+                })
+            },
             updateVacancy() {
                 this.submitted = true
                 this.$validator.validate().then(valid => {
@@ -94,7 +120,7 @@
 
                 AXIOS.put('/recruiter/' + this.$route.params.id,
                     {text: this.vacancy.text, title: this.vacancy.title,phone:this.vacancy.phone,
-                        email:this.vacancy.email},
+                        email:this.vacancy.email,region:this.vacancy.region},
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -129,6 +155,7 @@
         },
         beforeMount(){
             this.getVacancy()
+            this.getAuthor()
         }
     }
 </script>
@@ -161,6 +188,15 @@
     }
     form input:focus, form textarea:focus {
         border-color: #357EBD;
+    }
+    .profile-edit-btn{
+        border: none;
+        border-radius: 1.5rem;
+        width: 70%;
+        padding: 2%;
+        font-weight: 600;
+        color: #6c757d;
+        cursor: pointer;
     }
     form input:focus + label, form textarea:focus + label {
         background: #357EBD;
@@ -212,4 +248,5 @@
         width: 40%;
         padding-top: 5px;
     }
+
 </style>

@@ -33,6 +33,7 @@ public class User {
     @NotBlank(message = "Email cannot be empty")
     private String email;
 
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
@@ -46,6 +47,7 @@ public class User {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Vacancy> vacancies;
 
+    private String busyness;
 
     public User() {
     }

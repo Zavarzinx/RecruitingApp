@@ -11,6 +11,8 @@ import SingleVacancy from './components/SingleVacancy'
 import Search from './components/Search'
 import VSearch from './components/VSearch'
 import Home from './components/Home'
+import Profile from './components/Profile'
+import SingleProfile from './components/SingleProfile.vue'
 Vue.use(Router);
 
 
@@ -38,6 +40,18 @@ export const router =  new Router({
       path: '/login',
       name: 'Login',
       component: Login,
+    },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: Profile,
+      meta: { requiresAuth: true,roles:['USER','ADMIN','RECRUITER'] }
+    },
+    {
+      path: '/profile/:id',
+      name: 'SingleProfile',
+      component: SingleProfile,
+      meta: { requiresAuth: true,roles:['ADMIN'] }
     },
     {
     path: '/user/:id',

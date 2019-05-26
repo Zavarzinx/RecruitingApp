@@ -2,10 +2,10 @@
     <div>
         <div class="wrapper fadeInDown">
             <div id="formContent">
-                <b-alert v-if="credential" show variant="danger">Wrong credentials</b-alert>
+                <b-alert  v-if="credential" show variant="danger">{{error}}</b-alert>
                 <form>
-                    <input type="text" id="username" class="fadeIn second" name="username" placeholder="username" v-model="password">
-                    <input type="password" id="password" class="fadeIn third" name="password" placeholder="password" v-model="username">
+                    <input type="text" id="username" class="fadeIn second" name="username" placeholder="username" v-model="username">
+                    <input type="password" id="password" class="fadeIn third" name="password" placeholder="password" v-model="password">
                     <input type="submit" @click.prevent="SignIn" class="fadeIn fourth"  value="Log In">
                 </form>
             </div>
@@ -21,7 +21,8 @@
             return {
                 username: '',
                 password: '',
-                credential:false
+                credential:false,
+                error:''
             }
         },
         methods: {
@@ -38,20 +39,20 @@
                             console.log(roles)
                             localStorage.setItem('roles', JSON.stringify(roles));
                             localStorage.setItem('username', username);
-                            if (roles.includes('RECRUITER')){
-                                this.$router.push('/vacancy')
-                            } else {
-                                this.$router.push('/resume')
-                            }
+                            this.$router.push('/profile')
                             location.reload();
-                            console.log("after push")
                         }
                     )
                     .catch(
                         (error) => {
-                            console.log(error)
+                            console.log(error.response)
                             if (error.response.status === 403){
                                 this.credential = true
+                                this.error = error.response.data.message
+                            }
+                            if (error.response.status === 404){
+                                this.credential = true
+                                this.error = error.response.data.message
                             }
                         }
                     );

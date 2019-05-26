@@ -33,14 +33,17 @@ public class Resume {
 
     private String title;
 
+    private String region;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
 
+    @JsonFormat(pattern="dd/MM/yyyy")
     @Column(name = "creation_date")
     private LocalDateTime createdAt;
 
+    @JsonFormat(pattern="dd/MM/yyyy")
     @Column(name = "last_update")
     private LocalDateTime lastUpdated;
 

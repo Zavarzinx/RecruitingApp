@@ -12,6 +12,11 @@
                         <div v-if="submitted && vErrors.has('title') " class="invalid-feedback">{{ vErrors.first('title') }}</div>
                     </div>
                     <div class="form-group">
+                        <input id="region" name="region"  v-validate="'required'" type="text" class="form-control" required v-model="vacancy.region" :class="{ 'is-invalid': submitted && vErrors.has('region') }"/>
+                        <label for="title">Location region</label>
+                        <div v-if="submitted && vErrors.has('region') " class="invalid-feedback">{{ vErrors.first('region') }}</div>
+                    </div>
+                    <div class="form-group">
                         <textarea id="text" name="text"  v-validate="'required'" class="form-control" required v-model="vacancy.text" :class="{ 'is-invalid': submitted && vErrors.has('text') }"/>
                         <label for="title">Message</label>
                         <div v-if="submitted && vErrors.has('text') " class="invalid-feedback">{{ vErrors.first('text') }}</div>
@@ -26,6 +31,7 @@
                         <label for="phone">Phone number</label>
                         <div v-if="submitted && vErrors.has('phone') " class="invalid-feedback">{{ vErrors.first('phone') }}</div>
                     </div>
+
                 </form>
             </div>
 
@@ -56,6 +62,7 @@
                     author: '',
                     phone:'',
                     email:'',
+                    region:'',
                     id: 0
                 },
                 submitted:false
@@ -69,7 +76,7 @@
                 console.log(this.vacancy.text + "vacancy")
                 AXIOS.post('/recruiter',
                     {text: this.vacancy.text,title:this.vacancy.title,email:this.vacancy.email,
-                    phone:this.vacancy.phone},
+                    phone:this.vacancy.phone,region:this.vacancy.region},
                     {headers: {
                             'Content-Type': 'application/json',
                             'Authorization':localStorage.token,

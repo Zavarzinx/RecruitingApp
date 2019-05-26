@@ -43,9 +43,14 @@ public class UserServiceImpl implements UserService {
                     "There is an account with that email adress: "
                             +  user.getEmail());
         }
+        if(userRepo.existsUserByUsername(user.getUsername())){
+            throw new UserAlreadyExistException(
+                    "There is an account with that username: "
+                            +  user.getUsername());
+        }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (user.getRoles() == null || user.getRoles().isEmpty()){
+        if (user.getRoles() == null || user.getRoles().isEmpty() || user.getRoles().contains("ADMIN")){
             user.setRoles(Collections.singleton(Role.USER));
         }
         User userDB = userRepo.save(user);
@@ -60,13 +65,14 @@ public class UserServiceImpl implements UserService {
     }
 
     private void sendMessage(User user) {
+        log.info("sendingmessage");
         ConfirmationToken confirmationToken = new ConfirmationToken(user);
         confirmationTokenRepo.save(confirmationToken);
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("Complete Registration!");
-        mailMessage.setFrom("nazgaard@gmail.com");
+        mailMessage.setFrom("recruitingapp@gmail.com");
         mailMessage.setText("To confirm your account, please click here : "
                 +"http://localhost:8088/api/registration/confirm-account?token="+confirmationToken.getConfirmationToken());
 
@@ -93,23 +99,27 @@ public class UserServiceImpl implements UserService {
         String userEmail = userFromDB.getEmail();
         String email = user.getEmail();
 
-        boolean isEmailChanged = (!email.equals(userEmail)) ||
-                ( !userEmail.equals(email));
-
+        boolean isEmailChanged = (!email.equals(userEmail));
+        log.info("emailchanged" + isEmailChanged);
         if (isEmailChanged) {
             user.setEmail(email);
         }
-
+        userFromDB.setBusyness(user.getBusyness());
+        userFromDB.setUsername(user.getUsername());
+        userFromDB.setEmail(user.getEmail());
+        userFromDB.setLastName(user.getLastName());
+        userFromDB.setFirstName(user.getFirstName());
         if (!StringUtils.isEmpty(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
-        userRepo.save(user);
 
         if (isEmailChanged) {
-            sendMessage(user);
+            userFromDB.setActive(false);
+            userRepo.save(userFromDB);
+            sendMessage(userFromDB);
         }
-        return userRepo.save(user);
+        return userRepo.save(userFromDB);
     }
 
     private boolean emailExist(String email){

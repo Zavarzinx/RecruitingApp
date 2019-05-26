@@ -12,6 +12,11 @@
                 <div v-if="submitted && vErrors.has('title') " class="invalid-feedback">{{ vErrors.first('title') }}</div>
             </div>
             <div class="form-group">
+                <input id="region" name="region"  v-validate="'required'" type="text" class="form-control" required v-model="resume.region" :class="{ 'is-invalid': submitted && vErrors.has('region') }"/>
+                <label for="region">Location region</label>
+                <div v-if="submitted && vErrors.has('region') " class="invalid-feedback">{{ vErrors.first('region') }}</div>
+            </div>
+            <div class="form-group">
                 <textarea id="text" name="text"  v-validate="'required'" class="form-control" required v-model="resume.text" :class="{ 'is-invalid': submitted && vErrors.has('text') }"/>
                 <label for="title">Message</label>
                 <div v-if="submitted && vErrors.has('text') " class="invalid-feedback">{{ vErrors.first('text') }}</div>
@@ -54,6 +59,7 @@ data() {
             author: '',
             phone:'',
             email:'',
+            region:'',
             id: 0
         },
         submitted: false,
@@ -70,7 +76,7 @@ data() {
                     AXIOS.post('/resume',
                         {
                             text: this.resume.text, title: this.resume.title, phone: this.resume.phone,
-                            email: this.resume.email
+                            email: this.resume.email,region:this.resume.region
                         },
                         {
                             headers: {

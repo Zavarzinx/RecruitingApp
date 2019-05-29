@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <b-button v-b-modal.modal-1>Edit profile</b-button>
+                <b-button v-if="isAdmin" v-b-modal.modal-1>Edit profile</b-button>
                 <b-modal id="modal-1" title="Edit profile">
                     <form>
                         <div class="form-group">
@@ -51,16 +51,6 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4">
-                <div class="profile-work">
-                    <p>SKILLS</p>
-                    <a href="">Web Designer</a><br/>
-                    <a href="">Web Developer</a><br/>
-                    <a href="">WordPress</a><br/>
-                    <a href="">WooCommerce</a><br/>
-                    <a href="">PHP, .Net</a><br/>
-                </div>
-            </div>
             <div class="col-md-8">
                 <div class="tab-content profile-tab" id="myTabContent">
                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -127,7 +117,7 @@
         },
         methods: {
             getUser() {
-                AXIOS.get('/admin/users/' + this.$route.params.id,
+                AXIOS.get('/user/' + this.$route.params.id,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -181,6 +171,11 @@
                 })
             }
         },
+        computed:{
+            isAdmin() {
+                return this.$store.getters.isAdmin
+            }
+            },
         beforeMount(){
             this.getUser()
         }

@@ -32,11 +32,9 @@ public class RegistrationController {
     public ResponseEntity<?> confirmUserAccount(@RequestParam("token")String confirmationToken) {
         if (userService.confirmAccount(confirmationToken))
         {
-            log.info("OK");
             return new ResponseEntity<>(HttpStatus.OK);
         }
         else {
-            log.info("NOT OK");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }

@@ -51,7 +51,7 @@ export const router =  new Router({
       path: '/profile/:id',
       name: 'SingleProfile',
       component: SingleProfile,
-      meta: { requiresAuth: true,roles:['ADMIN'] }
+      meta: { requiresAuth: true,roles:['USER','ADMIN','RECRUITER'] }
     },
     {
     path: '/user/:id',

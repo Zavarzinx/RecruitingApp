@@ -8,6 +8,7 @@
                         <b-button>Author profile</b-button>
                     </router-link>
                     <div>{{resume.createdAt}} Creation time</div>
+                    <div>{{resume.lastUpdated}} Last updated</div>
                     <div class="form-group">
                         <input id="title" name="title"  v-validate="'required'" type="text" class="form-control" required v-model="resume.title" :class="{ 'is-invalid': submitted && vErrors.has('title') }"/>
                         <label for="title">Resume Title</label>

@@ -2,6 +2,7 @@ package com.recruiting.controller;
 
 import com.recruiting.Service.UserService;
 import com.recruiting.domain.User;
+import com.recruiting.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,5 +36,16 @@ public class UserController {
         User userFromDB = userService.findByUsername(userDetails.getUsername());
         log.info("updating user" + user);
         return new ResponseEntity<>(userService.updateUser(user,userFromDB), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
+        UserDto userDto = UserDto.fromUser(userService.findById(id));
+
+        if (userDto == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 }

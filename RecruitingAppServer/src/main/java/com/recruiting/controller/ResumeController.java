@@ -48,7 +48,6 @@ public class ResumeController {
 
     @GetMapping("{id}")
     public  ResponseEntity<Resume> getResume(@PathVariable("id") Resume resume){
-        log.info("GET");
         log.info(resume.toString() + " successfully get from DB");
         return new ResponseEntity<>(resume, HttpStatus.OK);
     }
@@ -88,7 +87,6 @@ public class ResumeController {
     public ResponseEntity<Void> deleteResume(@PathVariable("id") Resume resume)
     {   log.info("DELETE" + resume.toString());
             resumeRepo.delete(resume);
-      //  resumeService.deleteResumeById(resume.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -65,7 +65,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private void sendMessage(User user) {
-        log.info("sendingmessage");
         ConfirmationToken confirmationToken = new ConfirmationToken(user);
         confirmationTokenRepo.save(confirmationToken);
 
@@ -74,7 +73,7 @@ public class UserServiceImpl implements UserService {
         mailMessage.setSubject("Complete Registration!");
         mailMessage.setFrom("recruitingapp@gmail.com");
         mailMessage.setText("To confirm your account, please click here : "
-                +"http://localhost:8088/api/registration/confirm-account?token="+confirmationToken.getConfirmationToken());
+                +"http://localhost:8080/confirm-account?token="+confirmationToken.getConfirmationToken());
 
         emailSenderService.sendEmail(mailMessage);
     }
@@ -100,7 +99,6 @@ public class UserServiceImpl implements UserService {
         String email = user.getEmail();
 
         boolean isEmailChanged = (!email.equals(userEmail));
-        log.info("emailchanged" + isEmailChanged);
         if (isEmailChanged) {
             user.setEmail(email);
         }
@@ -124,10 +122,7 @@ public class UserServiceImpl implements UserService {
 
     private boolean emailExist(String email){
         User user = userRepo.findByEmail(email);
-        if (user != null) {
-            return true;
-        }
-        return false;
+        return user != null;
     }
 
     @Override

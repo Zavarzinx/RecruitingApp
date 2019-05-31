@@ -51,7 +51,7 @@
                     <div v-if="submitted && vErrors.has('busyness')" class="invalid-feedback">{{ vErrors.first('busyness') }}</div>
                 </div>
                 <b-form-group label="Role">
-                    <b-form-radio v-model="user.roles" name="user" value="USER">User</b-form-radio>
+                    <b-form-radio v-model="user.roles" name="job seeker" value="USER">User</b-form-radio>
                     <b-form-radio v-model="user.roles" name="recruiter" value="RECRUITER">Recruiter</b-form-radio>
                 </b-form-group>
                 <input type="submit" @click.prevent="SignUp" class="fadeIn fourth"  value="Sign Up">

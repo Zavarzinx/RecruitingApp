@@ -9,6 +9,7 @@
         </form>
         <div  v-for="list in filteredResumes" :key="list.id" class="single-resume">
             <h2> <router-link :to="{ name: 'SingleResume', params: { id: list.id }}">{{ list.title }}</router-link></h2>
+            <article>Location: {{ list.region }}</article>
             <article>{{ list.text }}</article>
         </div>
         <b-pagination

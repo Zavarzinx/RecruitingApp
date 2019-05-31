@@ -87,7 +87,6 @@ public class JwtTokenProvider {
     }
 
     private List<String> getRoleNames(Set<Role> userRoles) {
-        log.info("geRoleNames");
         List<String> result = new ArrayList<>();
 
         userRoles.forEach(role -> {

@@ -13,6 +13,7 @@ import VSearch from './components/VSearch'
 import Home from './components/Home'
 import Profile from './components/Profile'
 import SingleProfile from './components/SingleProfile.vue'
+import ConfirmAcc from './components/ConfirmAcc'
 Vue.use(Router);
 
 
@@ -94,6 +95,11 @@ export const router =  new Router({
       name: 'Home',
       component: Home,
     },
+    {
+      path:'/confirm-account',
+      name:ConfirmAcc,
+      component:ConfirmAcc
+    }
   ],
 
 })

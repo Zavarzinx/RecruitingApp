@@ -3,9 +3,9 @@
 <div class="well">
     <div  v-for="list in slicedUsers" :key="list.id" class="single-user">
         <h2> <router-link :to="{ name: 'SingleProfile', params: { id: list.id }}">{{ list.username }}</router-link></h2>
-        <article>{{ list.email }}</article>
-        <article>{{ list.firstName }}</article>
-        <article>{{ list.lastName }}</article>
+        <article>Email: {{ list.email }}</article>
+        <article>First name: {{ list.firstName }}</article>
+        <article>Last name: {{ list.lastName }}</article>
     </div>
     <b-pagination
             :total-rows="rows"

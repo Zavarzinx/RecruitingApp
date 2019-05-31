@@ -49,7 +49,7 @@ public class AuthenticationController {
             if (!user.isActive()){
                 throw new JwtAuthenticationException("User with username: " + username + "is not activated");
             }
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
 
             String token = jwtTokenProvider.createToken(username, user.getRoles());
 

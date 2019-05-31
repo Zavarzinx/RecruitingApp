@@ -18,19 +18,19 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "Username cannot be empty")
+
     private String username;
 
     private String firstName;
+
     private String lastName;
+
     private boolean active;
-    @NotBlank(message = "Password cannot be empty")
+
     private String password;
 
-    @Email(message = "Email is not correct")
-    @NotBlank(message = "Email cannot be empty")
     private String email;
 
 

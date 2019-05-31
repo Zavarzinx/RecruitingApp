@@ -20,7 +20,7 @@
                         <div v-if="submitted && vErrors.has('region') " class="invalid-feedback">{{ vErrors.first('region') }}</div>
                     </div>
                     <div class="form-group">
-                        <textarea id="text" name="text"  v-validate="'required'" class="form-control" required v-model="resume.text" :class="{ 'is-invalid': submitted && vErrors.has('text') }"/>
+                        <textarea id="text" name="text" rows="10"  v-validate="'required'" class="form-control" required v-model="resume.text" :class="{ 'is-invalid': submitted && vErrors.has('text') }"/>
                         <label for="title">Message</label>
                         <div v-if="submitted && vErrors.has('text') " class="invalid-feedback">{{ vErrors.first('text') }}</div>
                     </div>

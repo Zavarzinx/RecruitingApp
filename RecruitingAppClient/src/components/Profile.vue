@@ -118,7 +118,10 @@
                     roles:[],
                     busyness:''
                 },
-                submitted: false
+                submitted: false,
+                oldUsername: '',
+                oldPassword:'',
+                oldEmail:''
             }
         },
         methods: {
@@ -132,6 +135,9 @@
                         }
                     }).then(response => {
                     this.user = response.data
+                    this.oldUsername = this.user.username;
+                    this.oldPassword = this.user.password;
+                    this.oldEmail = this.user.email;
                     console.log(response.data)
                         .catch(e => {
                             this.errors.push(e)
@@ -140,7 +146,6 @@
             },
             updateUser() {
                 this.submitted = true;
-                const oldUsername = this.user.username;
                 console.log("update user" + this.user)
                 this.$validator.validate().then(valid => {
                     if (valid) {
@@ -160,19 +165,18 @@
                                     'Access-Control-Allow-Origin': "*"
                                 }
                             }).then(response => {
-                                console.log(oldUsername + "oldusername")
+                                console.log(this.oldUsername + "oldusername")
                             this.user = response.data
-                            console.log(response.data)
-                            if (!(oldUsername === this.user.username)){
-                                localStorage.removeItem("token")
-                                localStorage.removeItem('roles')
-                                this.$router.push("/login")
-                                location.reload();
-
-                            }
                         }).catch(e => {
                             this.errors.push(e)
                         })
+                        if (!(this.oldUsername === this.user.username) || !(this.user.password === this.oldPassword )
+                            || !(this.user.email === this.oldEmail) ){
+                            localStorage.removeItem("token")
+                            localStorage.removeItem('roles')
+                            this.$router.push("/login")
+                            location.reload();
+                        }
                     }
                 })
             }

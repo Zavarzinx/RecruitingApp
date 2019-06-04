@@ -23,6 +23,7 @@
     <div class="wrapper fadeInDown">
 
         <div id="formContentUser">
+            <b-alert  v-if="credential" show variant="danger">{{error}}</b-alert>
             <form>
                 <div class="form-group">
                     <input type="text" id="username" class="form-control" v-validate="'required'" name="username" placeholder="username" required v-model="user.username" :class="{ 'is-invalid': submitted && vErrors.has('username') }"  />
@@ -76,6 +77,8 @@ export default {
                 roles: []
             },
             submitted: false,
+            credential:false,
+            error:'',
             options: [
                 {text: 'Recruiter', value: 'RECRUITER'},
                 {text: 'User', value: 'USER'}
@@ -99,11 +102,16 @@ export default {
                         .then(
                             (response) => {
                                 console.log(response)
-                                this.$router.push('/login')
+                                    this.$router.push('/login')
                             }
                         )
                         .catch(
-                            (error) => console.log(error)
+                            (error) => {
+                                console.log(error)
+                                this.credential = true
+                                this.error = error.response.data.message
+                            }
+
                         );
                 }
             })

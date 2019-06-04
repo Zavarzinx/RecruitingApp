@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (user.getRoles() == null || user.getRoles().isEmpty() || user.getRoles().contains("ADMIN")){
+        if (user.getRoles() == null || user.getRoles().isEmpty() || user.getRoles().contains(Role.ADMIN)){
             user.setRoles(Collections.singleton(Role.USER));
         }
         User userDB = userRepo.save(user);
@@ -100,15 +100,17 @@ public class UserServiceImpl implements UserService {
 
         boolean isEmailChanged = (!email.equals(userEmail));
         if (isEmailChanged) {
-            user.setEmail(email);
+            log.info("email changed" + email);
+            userFromDB.setEmail(email);
         }
         userFromDB.setBusyness(user.getBusyness());
         userFromDB.setUsername(user.getUsername());
         userFromDB.setEmail(user.getEmail());
         userFromDB.setLastName(user.getLastName());
         userFromDB.setFirstName(user.getFirstName());
-        if (!StringUtils.isEmpty(user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        if (!StringUtils.isEmpty(user.getPassword()) && !user.getPassword().equals(userFromDB.getPassword())) {
+            userFromDB.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
 
